@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head><title>WebSocket Test</title></head>
+<body>
+<h1>WebSocket Test</h1>
+<input id="input" placeholder="Type message...">
+<button onclick="sendMsg()">Send</button>
+<ul id="messages"></ul>
+
+<script>
+    // WebSocket connection to the server
+    const socket = new WebSocket("ws://localhost:8080/chat");
+
+    socket.onopen = () => {
+        console.log("✅ Connected to server");
+        // Add a message when the connection is established
+        const msgList = document.getElementById("messages");
+        const li = document.createElement("li");
+        li.textContent = "Connected to WebSocket!";
+        msgList.appendChild(li);
+    };
+
+    socket.onmessage = (event) => {
+        // Display server message in the messages list
+        const msgList = document.getElementById("messages");
+        const li = document.createElement("li");
+        li.textContent = event.data;
+        msgList.appendChild(li);
+    };
+
+    socket.onerror = (error) => {
+        console.log("Error in WebSocket connection:", error);
+    };
+
+    socket.onclose = () => {
+        console.log("❌ WebSocket connection closed");
+    };
+
+    function sendMsg() {
+        const input = document.getElementById("input");
+        socket.send(input.value);  // Send message to server
+        input.value = "";  // Clear the input field
+    }
+</script>
+</body>
+</html>
